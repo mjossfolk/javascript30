@@ -12,6 +12,9 @@ function getVideo(){
 			video.src = window.URL.createObjectURL(localMediaStream);
 			video.play();
 		})
+		.catch(err=> {
+			console.error(' UH OH', err);
+		});
 }
 
 function paintToCanvas(){
@@ -22,12 +25,30 @@ function paintToCanvas(){
 
 	return setinterval(() => {
 		ctx.drawImage(video, 0, 0, width, height);
-	}, 16);
+	
+		lwet pixels = ctx.getImageData(0, 0, width, height);
+
+		pixels = rgbSplit(pixels);
+
+		ctx.putImageData(pixels, 0, 0);
+	}, 16
 }
 
 function takePhoto(){
+	//play the sound
 	snap.currentTime = 0;
 	snap.play();
+
+	//take the data our of the canvas
+	const data = canvas.toDataURL('image/jpeg');
+	const link = document.createElement('a');
+	link.href= data;
+	link.setAttribute('download', 'handsome');
+	link.textContent = 'Download Image';
+	link.innerHTML = `<img src = 
+	strip.insertBefore(link, strip.firstChild);
 }
 
 getVideo();
+
+video.addEventListener('canplay', paintToCanvas); 
